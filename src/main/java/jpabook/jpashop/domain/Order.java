@@ -108,7 +108,6 @@ public class Order {
         return totalPrice;
     }*/
 
-    // 람다식으로 이렇게 바꿀 수 있음
     public int getTotalPrice() {
         return orderItems.stream().mapToInt(OrderItem::getTotalPrice).sum();
     }

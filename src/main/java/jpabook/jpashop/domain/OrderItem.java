@@ -45,11 +45,10 @@ public class OrderItem {
 
     //==비즈니스 로직==//
     public void cancel() {
-        // 취소하면 아이템의 재고를 원복해야 함.
-        getItem().addStock(count);
+        getItem().addStock(count);      // 주문 취소 시 아이템의 재고를 원복
     }
 
-    public int getTotalPrice() {
+    public int getTotalPrice() {        // 주문 상품의 전체 가격 조회
         return getOrderPrice() * getCount();
     }
 }
