@@ -14,7 +14,7 @@ EntityManager로 영속성 관리를 하고 JpaRepository가 제공하는 기본
 @Repository     // 컴포넌트 스캔을 해서 스프링 빈으로 등록함
 @RequiredArgsConstructor
 public class MemberRepository {
-    
+
     private final EntityManager em;
 
 

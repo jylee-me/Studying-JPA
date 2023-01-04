@@ -1,5 +1,6 @@
 package jpabook.jpashop.service;
 
+import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
 import org.junit.Test;
@@ -25,10 +26,11 @@ public class MemberServiceTest {
 
 
     @Test
-    public void 회원가입() throws Exception {
+    public void join() throws Exception {
         //given
         Member member = new Member();
         member.setName("kim");
+        member.setAddress(new Address("서울", "강남구", "123456"));
 
         //when
         Long savedId = memberService.join(member);
