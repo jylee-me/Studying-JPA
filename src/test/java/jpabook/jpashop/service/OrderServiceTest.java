@@ -1,13 +1,13 @@
 package jpabook.jpashop.service;
 
 
-
 import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.exception.NotEnoughStockException;
 import jpabook.jpashop.repository.OrderRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,9 +25,12 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class OrderServiceTest {
 
-    @Autowired EntityManager em;
-    @Autowired OrderService orderService;
-    @Autowired OrderRepository orderRepository;
+    @Autowired
+    EntityManager em;
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    OrderRepository orderRepository;
 
     @Test
     public void order() throws Exception {
@@ -48,31 +51,49 @@ public class OrderServiceTest {
         assertEquals("주문 수량만큼 재고가 줄어야 한다.", 8, book.getStockQuantity());
     }
 
+    @Test(expected = NotEnoughStockException.class)
+    public void 상품주문_재고수량초과() throws Exception {
+        //given
+        Member member = createMember();
+        Item item = createBook("시골 JPA", 10000, 10);
 
-/*
+        int orderCount = 11;    // 재고보다 많이
+
+        //when
+        orderService.order(member.getId(), item.getId(), orderCount);
+
+        //then
+        fail("재고 수량 부족 예외가 발생해야 한다.");
+    }
+
+    /*
+     * 재고 수량 초과 테스트는 이렇게 통합적으로 하는 것 보다는
+     * 단위 테스트로 하는 것이 더 좋다.
+     * Item 엔티티의 removeStock 비즈니스 메서드만 가지고 하는 별도의 테스트를 만드는 것이 더 좋다.
+     * */
+
 
     @Test
     public void 주문취소() throws Exception {
         //given
+        Member member = createMember();
+        Book item = createBook("시골 JPA", 10000, 10);
 
+        int orderCount = 2;
 
-        //when
-
-
-        //then
-    }
-
-    @Test
-    public void 재고수량초과() throws Exception {
-        //given
-
+        Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
 
         //when
-
+        orderService.cancelOrder(orderId);
 
         //then
+        Order getOrder = orderRepository.findOne(orderId);
+
+        assertEquals("주문 취소 시 상태는 CANCEL이다.", OrderStatus.CANCEL, getOrder.getStatus());
+        assertEquals("주문이 취소된 상품은 그만큼 재고가 증가해야 한다.", 10, item.getStockQuantity());
+
     }
-*/
+
 
     private Member createMember() {
         Member member = new Member();
