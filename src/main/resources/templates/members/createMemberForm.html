@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<style>
+.fieldError {
+border-color: #bd2130;
+}
+
+
+
+
+</style>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <form role="form" action="/members/new" th:object="${memberForm}" method="post">
+        <!-- th는 타임리프 문법. th:object: form 안에서는 memberForm 객체를 계속 쓰겠다. -->
+        <div class="form-group">
+            <label th:for="name">이름</label>
+            <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요"
+                   th:class="${#fields.hasErrors('name')}? 'form-control fieldError' : 'form-control'">
+            <!-- th:field="*{name}"에서
+                - field: input 태그 안의 id와 name을 'name'으로 하겠다. 보통 관례상 id와 name을 하나의 이름으로 쓰는데 중복해서 쓰는 걸 타임리프 문법이 하나만 쓰게 해줌.
+                - *: object="${memberForm}"를 참고하겠다.
+            -->
+            <!-- th:class="${#fields.hasErrors('name')}? : name에 에러가 있으면,
+            'form-control fieldError' : 'form-control'": (5~7번째 줄) 박스 테두리를 빨간색으로 하겠다.
+            -->
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Incorrect date</p>
+            <!-- th:if="${#fields.hasErrors('name')}": name에 에러가 있으면,
+                th:errors="*{name}": name 필드의 에러 메시지를 출력해줌. => MemberForm의 @NotEmpty(message = "회원 이름은 필수입니다.")
+            -->
+        </div>
+        <div class="form-group">
+            <label th:for="city">도시</label>
+            <input type="text" th:field="*{city}" class="form-control"
+                   placeholder="도시를 입력하세요">
+        </div>
+        <div class="form-group">
+            <label th:for="street">거리</label>
+            <input type="text" th:field="*{street}" class="form-control"
+                   placeholder="거리를 입력하세요">
+        </div>
+        <div class="form-group">
+            <label th:for="zipcode">우편번호</label>
+            <input type="text" th:field="*{zipcode}" class="form-control"
+                   placeholder="우편번호를 입력하세요">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br/>
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+</html>
